@@ -16,6 +16,10 @@
 
 
 <h2>Product</h2>
+<form class="form-inline" asp-action="Query" method="get">
+    <input type="number" name="price" />
+    <input type="submit" class="btn btn-dark" value="Query" />
+</form>
 <table class="table table-bordered">
     <tr>
         <th>RowKey</th>
@@ -25,6 +29,7 @@
         <th>Stock</th>
         <th>Color</th>
         <th>TimeStamp</th>
+        <th>Actions</th>
     </tr>
     @foreach (var item in ViewBag.products as List<AzureStorageLibrary.Model.Product>)
     {

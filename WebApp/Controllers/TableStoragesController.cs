@@ -60,6 +60,15 @@ namespace WebApp.Controllers
         {
             await _productNoSqlStorage.DeleteAsync(rowKey, partitionKey);
             return RedirectToAction("Index");
-        } 
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> Query(int price)
+        {
+            ViewBag.isUpdate = false;
+            ViewBag.products = _productNoSqlStorage.QueryAsync(x => x.Price > price).ToList();
+
+            return View("Index");
+        }
     }
 }

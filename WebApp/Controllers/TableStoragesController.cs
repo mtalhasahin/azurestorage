@@ -1,9 +1,11 @@
 ﻿using AzureStorageLibrary;
 using AzureStorageLibrary.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos.Table;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace WebApp.Controllers
@@ -20,7 +22,7 @@ namespace WebApp.Controllers
         public IActionResult Index()
         {
             ViewBag.products = _productNoSqlStorage.AllAsync().ToList();
-
+            ViewBag.isUpdate = false;
             return View();
         }
 
@@ -33,6 +35,26 @@ namespace WebApp.Controllers
             await _productNoSqlStorage.AddAsync(product);
 
             return RedirectToAction("Index");
+        }    
+
+        public async Task<IActionResult> Update(string rowKey, string partitionKey)
+        {
+            var product = await _productNoSqlStorage.GetAsync(rowKey, partitionKey);
+            ViewBag.products = _productNoSqlStorage.AllAsync().ToList();
+            ViewBag.isUpdate = true;
+
+            return View("Index", product);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(Product product)
+        {
+            product.ETag = "*";
+            ViewBag.isUpdate = true;
+            await _productNoSqlStorage.UpdateAsync(product);
+
+            return RedirectToAction("Index");
+           
         }
     }
 }
